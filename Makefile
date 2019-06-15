@@ -1,5 +1,5 @@
 REGISTRY                 ?= hex0cter
-IMAGE                     = opencart
+IMAGE                     = apache-php
 GIT_COMMIT                = $(shell git log --pretty=format:'%h' -n 1)
 VERSION                   = latest
 
