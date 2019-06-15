@@ -17,7 +17,7 @@ build:
 		.
 
 run:
-	@$(DOCKER) run -it -P --name $(IMAGE) $(REGISTRY)/$(IMAGE):$(VERSION)
+	@$(DOCKER) run -it --rm -P --name $(IMAGE) $(REGISTRY)/$(IMAGE):$(VERSION)
 
 shell:
 	@$(DOCKER) exec -it $(IMAGE) bash

@@ -35,10 +35,14 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get install -y php mysql-client mysql-server unzip php7.2-mysql
 
-RUN curl -O https://files.phpmyadmin.net/phpMyAdmin/4.9.0.1/phpMyAdmin-4.9.0.1-all-languages.zip && unzip phpMyAdmin-4.9.0.1-all-languages.zip && ls && mv phpMyAdmin-4.9.0.1-all-languages /var/www/html/
+RUN curl -O https://files.phpmyadmin.net/phpMyAdmin/4.9.0.1/phpMyAdmin-4.9.0.1-all-languages.zip && unzip phpMyAdmin-4.9.0.1-all-languages.zip && ls && mv phpMyAdmin-4.9.0.1-all-languages /var/www/html/phpMyAdmin
 COPY docker-php.conf /etc/apache2/conf-available/
 
-RUN chown -R mysql:mysql /var/lib/mysql /var/run/mysqld && usermod -d /var/lib/mysql/ mysql
+ENV HOME /usr/src/app
+WORKDIR $HOME
+
+COPY mysql/create-user.sql $HOME/create-user.sql
+COPY entrypoint.sh $HOME/entrypoint.sh
 
 EXPOSE 80
-ENTRYPOINT ["apache2", "-DFOREGROUND"]
+ENTRYPOINT ["./entrypoint.sh"]
