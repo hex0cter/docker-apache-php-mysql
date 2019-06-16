@@ -19,8 +19,14 @@ build:
 run:
 	@$(DOCKER) run -it --rm -P --name $(IMAGE) $(REGISTRY)/$(IMAGE):$(VERSION)
 
+opencart-run:
+	@$(DOCKER) run -it --rm -P --name opencart -v $(PWD)/applications/opencart/upload:/var/www/html $(REGISTRY)/$(IMAGE):$(VERSION)
+
 shell:
 	@$(DOCKER) exec -it $(IMAGE) bash
+
+opencart-shell:
+	@$(DOCKER) exec -it opencart bash
 
 push: build
 	@$(DOCKER) push $(REGISTRY)/$(IMAGE):$(VERSION)
