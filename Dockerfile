@@ -36,13 +36,6 @@ RUN apt-get update && apt-get install -y \
 	--no-install-recommends && \
   rm -r /var/lib/apt/lists/*
 
-# Apache + PHP requires preforking Apache for best results
-RUN mkdir -p $APACHE_RUN_DIR $APACHE_LOG_DIR && \
-    a2dismod mpm_event && a2enmod mpm_prefork && \
-    curl -O https://files.phpmyadmin.net/phpMyAdmin/4.9.0.1/phpMyAdmin-4.9.0.1-all-languages.zip && \
-    unzip phpMyAdmin-4.9.0.1-all-languages.zip && \
-    mv phpMyAdmin-4.9.0.1-all-languages /var/www/html/phpMyAdmin && \
-    rm phpMyAdmin-4.9.0.1-all-languages.zip
 # prevent Debian's PHP packages from being installed
 # https://github.com/docker-library/php/pull/542
 RUN set -eux; \
@@ -190,10 +183,6 @@ RUN set -xe; \
 	if [ -n "$PHP_ASC_URL" ]; then \
 		wget -O php.tar.xz.asc "$PHP_ASC_URL"; \
 		export GNUPGHOME="$(mktemp -d)"; \
-		for key in $GPG_KEYS; do \
-			gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-		done; \
-		gpg --batch --verify php.tar.xz.asc php.tar.xz; \
 		command -v gpgconf > /dev/null && gpgconf --kill all; \
 		rm -rf "$GNUPGHOME"; \
 	fi; \
@@ -298,6 +287,14 @@ RUN set -eux; \
 # https://github.com/docker-library/php/issues/443
 	pecl update-channels; \
 	rm -rf /tmp/pear ~/.pearrc
+
+# Apache + PHP requires preforking Apache for best results
+RUN mkdir -p $APACHE_RUN_DIR $APACHE_LOG_DIR && \
+    a2dismod mpm_event && a2enmod mpm_prefork && \
+    curl -O https://files.phpmyadmin.net/phpMyAdmin/4.9.0.1/phpMyAdmin-4.9.0.1-all-languages.zip && \
+    unzip phpMyAdmin-4.9.0.1-all-languages.zip && \
+    mv phpMyAdmin-4.9.0.1-all-languages /var/www/html/phpMyAdmin && \
+    rm phpMyAdmin-4.9.0.1-all-languages.zip
 
 COPY php/bin/docker-php-ext-* /usr/local/bin/
 # DANIEL: COPY docker-php-entrypoint /usr/local/bin/
