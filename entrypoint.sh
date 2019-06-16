@@ -5,4 +5,5 @@ chown -R mysql:mysql /var/lib/mysql /var/run/mysqld && usermod -d /var/lib/mysql
 service mysql start
 mysql -u root < create-user.sql
 
-apache2 -DFOREGROUND
+# apache2 -DFOREGROUND
+bash
